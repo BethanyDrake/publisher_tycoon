@@ -1,30 +1,27 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import logo from './logo.svg';
 import './App.css';
 
+const Submissions = ({date}) => {
 
-const Calandar = () => {
+  const submissions = ['A submission', 'A Different Submission'];
 
-  const formatDate = ({month, year}) => {
+  return <div> {submissions[date]} </div>
+}
+
+const Calandar = ({date, setDate}) => {
+
+  const formatDate = (timeInMonths) => {
+
+    const year = Math.floor(timeInMonths / 12);
+    const month = timeInMonths % 12;
     const months = ['Jan', 'Feb', 'Mar', 'Apr','May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
     return `${months[month]} ${2000 +year}`;
   }
 
-  const nextMonth = ({month, year}) => {
-    if (month === 11) return {
-      month: 0,
-      year: year + 1,
-    }
-    return {
-      month: month +1,
-      year,
-    }
-  }
-  const [date, setDate] = useState({month:0, year: 0});
-  let i = 0;
   const onClickDone = () => {
-    i++;
-    setDate(nextMonth(date));
+
+    setDate(date + 1);
   }
   return (
     <div className="App">
@@ -32,14 +29,14 @@ const Calandar = () => {
       <button onClick={onClickDone}> Done </button>
     </div>
   );
-
-
-
-
 }
 
 function App() {
-  return <Calandar/>
+  const [date, setDate] = useState(0);
+  return <div>
+  <Submissions date={date}/>
+  <Calandar date={date} setDate={setDate}/>
+  </div>
 }
 
 export default App;

@@ -25,3 +25,17 @@ test('If you click done 14 times, you end up at Mar 2001', () => {
   const dateText = getByText(/Mar 2001/i);
   expect(dateText).toBeDefined();
 });
+
+test('to start, a submission is displayed', () => {
+  const { getByText } = render(<App />);
+  const submission = getByText(/A Submission/i);
+  expect(submission).toBeDefined();
+});
+
+test('after clicking done, a different submisison is displayed', () => {
+  const { getByText } = render(<App />);
+  const doneButton = getByText(/Done/i);
+  fireEvent.click(doneButton)
+  const submission = getByText(/A Different Submission/i);
+  expect(submission).toBeDefined();
+});
