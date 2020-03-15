@@ -4,6 +4,14 @@ import App from './App';
 import '@testing-library/jest-dom'
 
 
+
+
+  const getNextTitle = (i) => {
+    const titles = ["A Submission", "A Different Submission"];
+    return titles[i];
+  }
+
+
 test('At first, the date is Jan 2000', () => {
   const { getByText } = render(<App />);
   const dateText = getByText(/Jan 2000/i);
@@ -29,13 +37,24 @@ test('If you click done 14 times, you end up at Mar 2001', () => {
 });
 
 test('to start, a submission is displayed', () => {
-  const { getByText } = render(<App />);
+  const { getByText } = render(<App getNextTitle={getNextTitle} />);
   const submission = getByText(/A Submission/i);
   expect(submission).toBeDefined();
 });
 
+test('title generator makes the submission titles different', () => {
+  const generatorA = () => "Title A";
+  const { queryByText } = render(<App getNextTitle={generatorA}/>);
+
+  {
+    const submissionA = queryByText(/Title A/);
+    expect(submissionA).not.toBeNull();
+  }
+
+});
+
 test('after clicking done, a different submisison is displayed', () => {
-  const { getByText } = render(<App />);
+  const { getByText } = render(<App getNextTitle={getNextTitle}/>);
   const doneButton = getByText(/Done/i);
   fireEvent.click(doneButton)
   const submission = getByText(/A Different Submission/i);
@@ -44,7 +63,7 @@ test('after clicking done, a different submisison is displayed', () => {
 
 
 test('if you dont publish a submission, it dissapears next month;', () => {
-  const { getByText, queryByText } = render(<App />);
+  const { getByText, queryByText } = render(<App getNextTitle={getNextTitle}/>);
   const submission = queryByText(/A Submission/i);
   expect(submission).not.toBeNull();
   finishMonth(getByText);
@@ -54,7 +73,7 @@ test('if you dont publish a submission, it dissapears next month;', () => {
 });
 
 test('if you publish a submission, it doesnt dissapear next month;', () => {
-  const { getByText, queryByText } = render(<App />);
+  const { getByText, queryByText } = render(<App getNextTitle={getNextTitle}/>);
 
   const publishButton = getByText(/Publish/i);
   fireEvent.click(publishButton)
@@ -67,7 +86,7 @@ test('if you publish a submission, it doesnt dissapear next month;', () => {
 
 
 test('if you publish a submission, it looks different, and the publish button dissapears', () => {
-  const { getByText, queryByText } = render(<App />);
+  const { getByText, queryByText } = render(<App getNextTitle={getNextTitle}/>);
   const submission = getByText(/A Submission/i);
   expect(submission).toHaveClass('submission--new')
 
@@ -89,7 +108,7 @@ const finishMonth = (getByText) => {
 }
 
 test('after you publish a book, theres a new submission next month that you can publish', () => {
-  const { getByText, queryByText } = render(<App />);
+  const { getByText, queryByText } = render(<App getNextTitle={getNextTitle}/>);
 
   const publishButton = getByText(/Publish/i);
   fireEvent.click(publishButton)
@@ -108,7 +127,7 @@ test('after you publish a book, theres a new submission next month that you can 
 
 
 test('if you dont publish anything you dont get any money', () => {
-  const { getByTestId, getByText } = render(<App />)
+  const { getByTestId, getByText } = render(<App getNextTitle={getNextTitle}/>)
 
   //at the start, you have no money
   const moneyDisplay = getByTestId("money-display")
@@ -123,7 +142,7 @@ test('if you dont publish anything you dont get any money', () => {
 });
 
 test('published submissions give money each month.', () => {
-  const { getByTestId, getByText } = render(<App />)
+  const { getByTestId, getByText } = render(<App getNextTitle={getNextTitle}/>)
 
   //at the start, you have no money
   const moneyDisplay = getByTestId("money-display")
@@ -146,7 +165,7 @@ test('published submissions give money each month.', () => {
 });
 
 test('if you publish more books, you get more money', () => {
-  const { getByTestId, getByText } = render(<App />)
+  const { getByTestId, getByText } = render(<App getNextTitle={getNextTitle}/>)
 
   //then you publish a book and go forward by a month
   const publishButton = getByText(/Publish/i)
@@ -161,7 +180,6 @@ test('if you publish more books, you get more money', () => {
  const publishButton2 = getByText(/Publish/i)
  fireEvent.click(publishButton2)
  finishMonth(getByText);
-
 
   //now you have even more moeny!
   const moneyDisplayAfterAfter = getByTestId("money-display")

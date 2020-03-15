@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
 import './App.css';
+import RandomTitleGenerator from './TitleGenerator';
 
 const PublishButton = ({onClick}) => {
   return <button onClick={onClick}>Publish</button>
@@ -72,15 +73,16 @@ const Calandar = ({date, setDate, onMonthEnd}) => {
   );
 }
 
-function App() {
+const App = ({getNextTitle = RandomTitleGenerator}) => {
   const [date, setDate] = useState(0);
   const [money, setMoney] = useState(0);
   const [publishedBooks, setPublishedBooks] = useState([]);
-  const [submittedBooks, setSubmittedBooks] = useState(["A submission"]);
-  const onMonthEnd = () => {
+  const [submittedBooks, setSubmittedBooks] = useState([getNextTitle(0)]);
 
+  console.log({submittedBooks})
+  const onMonthEnd = () => {
     setMoney(money+publishedBooks.length);
-    setSubmittedBooks(["A Different Submission"])
+    setSubmittedBooks([getNextTitle(1)])
   }
   return <div>
   <PublishedBooks books={publishedBooks}/>
