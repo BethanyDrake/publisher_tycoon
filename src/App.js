@@ -1,15 +1,55 @@
-import React, {useState, useEffect} from 'react';
-import logo from './logo.svg';
+import React, {useState} from 'react';
 import './App.css';
 
-const Submissions = ({date}) => {
-
-  const submissions = ['A submission', 'A Different Submission'];
-
-  return <div> {submissions[date]} </div>
+const PublishButton = ({onClick}) => {
+  return <button onClick={onClick}>Publish</button>
 }
 
-const Calandar = ({date, setDate}) => {
+const PublishedBooks = ({books}) => {
+
+    return <div> {books[0]}</div>
+
+}
+
+const Submission = ({title, setPublishedBooks}) => {
+  let [status, setStatus] = useState('new');
+
+
+  const publishBook = () => {
+    setStatus('published');
+    setPublishedBooks(l => [...l, title]);
+  }
+
+  if (status === 'new') {
+    return <div> <span className={"submission--"+status}>{title}</span>
+
+    <PublishButton onClick={publishBook}/>
+    </div>
+  } else {
+    return <div> <span className={"submission--"+status}>{title}</span>
+    </div>
+  }
+}
+
+const Submissions = ({setPublishedBooks, books}) => {
+
+  return (
+
+      books.map(book =>
+        <Submission key={book} title={book} setPublishedBooks={setPublishedBooks}/>
+      )
+
+  )
+
+}
+
+const MoneyDisplay = ({money}) => {
+  return (
+  <div data-testid='money-display'>{'$' + money}</div>
+  )
+}
+
+const Calandar = ({date, setDate, onMonthEnd}) => {
 
   const formatDate = (timeInMonths) => {
 
@@ -22,6 +62,7 @@ const Calandar = ({date, setDate}) => {
   const onClickDone = () => {
 
     setDate(date + 1);
+    onMonthEnd();
   }
   return (
     <div className="App">
@@ -33,9 +74,19 @@ const Calandar = ({date, setDate}) => {
 
 function App() {
   const [date, setDate] = useState(0);
+  const [money, setMoney] = useState(0);
+  const [publishedBooks, setPublishedBooks] = useState([]);
+  const [submittedBooks, setSubmittedBooks] = useState(["A submission"]);
+  const onMonthEnd = () => {
+
+    setMoney(money+publishedBooks.length);
+    setSubmittedBooks(["A Different Submission"])
+  }
   return <div>
-  <Submissions date={date}/>
-  <Calandar date={date} setDate={setDate}/>
+  <PublishedBooks books={publishedBooks}/>
+  <Submissions setPublishedBooks={setPublishedBooks} books={submittedBooks}/>
+  <Calandar date={date} setDate={setDate} onMonthEnd={onMonthEnd}/>
+  <MoneyDisplay money={money}/>
   </div>
 }
 
