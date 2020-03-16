@@ -7,7 +7,7 @@ import '@testing-library/jest-dom'
 
 
   const getNextTitle = (i) => {
-    const titles = ["A Submission", "A Different Submission"];
+    const titles = ["A Submission", "A Different Submission", "Title A", "Title B", ];
     return titles[i];
   }
 
@@ -161,7 +161,6 @@ test('published submissions give money each month.', () => {
   finishMonth(getByText);
   const moneyDisplayAfterAfter = getByTestId("money-display")
   expect(moneyDisplayAfterAfter).toHaveTextContent('$2')
-
 });
 
 test('if you publish more books, you get more money', () => {
@@ -176,12 +175,15 @@ test('if you publish more books, you get more money', () => {
   const moneyDisplayAfter = getByTestId("money-display")
   expect(moneyDisplayAfter).toHaveTextContent('$1')
 
- //publish another book
- const publishButton2 = getByText(/Publish/i)
- fireEvent.click(publishButton2)
- finishMonth(getByText);
+  //publish another book
+  const publishButton2 = getByText(/Publish/i)
+  fireEvent.click(publishButton2)
+  finishMonth(getByText);
 
-  //now you have even more moeny!
+  //that book stays on display too
+  getByText(/A Different Submission/);
+
+  //and you have even more moeny!
   const moneyDisplayAfterAfter = getByTestId("money-display")
   expect(moneyDisplayAfterAfter).toHaveTextContent('$3')
 

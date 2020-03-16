@@ -7,9 +7,7 @@ const PublishButton = ({onClick}) => {
 }
 
 const PublishedBooks = ({books}) => {
-
-    return <div> {books[0]}</div>
-
+    return <div>{books.map(book => <div key={book}>{book}</div>)}</div>
 }
 
 const Submission = ({title, setPublishedBooks}) => {
@@ -79,10 +77,9 @@ const App = ({getNextTitle = RandomTitleGenerator}) => {
   const [publishedBooks, setPublishedBooks] = useState([]);
   const [submittedBooks, setSubmittedBooks] = useState([getNextTitle(0)]);
 
-  console.log({submittedBooks})
   const onMonthEnd = () => {
     setMoney(money+publishedBooks.length);
-    setSubmittedBooks([getNextTitle(1)])
+    setSubmittedBooks([getNextTitle(date+1)])
   }
   return <div>
   <PublishedBooks books={publishedBooks}/>
